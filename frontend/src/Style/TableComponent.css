@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif; 
+}
+
+h2 {
+    text-align: center; 
+    color: #333333; 
+}
+
+table {
+    width: 95%; 
+    border-collapse: collapse; 
+    margin: 20px 0; 
+    font-size: 16px; 
+}
+
+th, td {
+    border: 1px solid #dddddd; 
+    padding: 12px; 
+    text-align: left; 
+}
+
+th {
+    background-color: #2fb727; 
+    color: #333; 
+}
+
+tr:hover {
+    background-color: #f1f1f1; 
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-start; 
+    padding: 20px; 
+}
+
+button {
+    background-color: #2fb727;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #249f1a;
+}
