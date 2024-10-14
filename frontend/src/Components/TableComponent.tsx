@@ -8,12 +8,16 @@ const TableComponent: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editTask, setEditTask] = useState<Task | null>(null);
+    const [currentPage, setCurrentPage] = useState(1); // Current page state
+    const [totalPages, setTotalPages] = useState(1); // Total pages state
+    const pageSize = 10; // Number of tasks per page
 
-    const fetchTasks = async () => {
+    const fetchTasks = async (page: number) => {
         try {
-            const response = await fetch('http://localhost:5038/api/ticket');
+            const response = await fetch(`http://localhost:5038/api/ticket?page=${page}&pageSize=${pageSize}`);
             const data = await response.json();
-            setTasks(data);
+            setTasks(data.tickets); // Set tasks to the tickets array from the response
+            setTotalPages(data.totalPages); // Update total pages
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
@@ -33,7 +37,7 @@ const TableComponent: React.FC = () => {
                 throw new Error('Failed to add task');
             }
 
-            await fetchTasks();
+            await fetchTasks(currentPage); // Refresh tasks for the current page
         } catch (error) {
             console.error('Error adding task:', error);
             alert('Failed to add task: ' + (error instanceof Error ? error.message : String(error)));
@@ -55,7 +59,7 @@ const TableComponent: React.FC = () => {
                     throw new Error('Failed to update task');
                 }
 
-                await fetchTasks(); // Refresh the task list
+                await fetchTasks(currentPage); // Refresh the task list
                 setEditTask(null);
             } catch (error) {
                 console.error('Error updating task:', error);
@@ -75,7 +79,7 @@ const TableComponent: React.FC = () => {
                     throw new Error('Failed to delete task');
                 }
 
-                await fetchTasks();
+                await fetchTasks(currentPage); // Refresh tasks for the current page
             } catch (error) {
                 console.error('Error deleting task:', error);
                 alert('Failed to delete task: ' + (error instanceof Error ? error.message : String(error)));
@@ -84,8 +88,8 @@ const TableComponent: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchTasks(); // Fetch tasks when the component mounts
-    }, []);
+        fetchTasks(currentPage); // Fetch tasks when the component mounts or currentPage changes
+    }, [currentPage]);
 
     // Function to format the date as 'MMM-DD-YYYY'
     const formatDate = (dateString: string): string => {
@@ -108,7 +112,6 @@ const TableComponent: React.FC = () => {
                         <th>Date</th>
                         <th>Actions</th>
                     </tr>
-
                 </thead>
                 <tbody>
                     {tasks.map((task) => (
@@ -136,20 +139,38 @@ const TableComponent: React.FC = () => {
                                     Delete
                                 </a>
                             </td>
-
                         </tr>
-
-
                     ))}
                     <tr>
-                        <td colSpan={5} >
-                        <button onClick={() => { setIsModalVisible(true); setEditTask(null); }}>Add New</button>
-                    </td>
-                     </tr>
+                        <td colSpan={5}>
+                            <button onClick={() => { setIsModalVisible(true); setEditTask(null); }}>Add New</button>
+                        </td>
+                    </tr>
                 </tbody>
-
             </table>
-            {/* <button onClick={() => { setIsModalVisible(true); setEditTask(null); }}>Add Task</button> */}
+
+            {/* Pagination Controls */}
+            <div className="justify-content-between align-items-center my-3">
+                <button
+                    className="btn btn-outline-primary"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                >
+                    {'<'}
+                </button>
+                <span>
+                    Page {currentPage} of {totalPages}
+                </span>
+                <button
+                    className="btn btn-outline-primary"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                >
+                    {'>'}
+                </button>
+            </div>
+
+
             {isModalVisible && (
                 <AddTaskModal
                     onClose={() => setIsModalVisible(false)}

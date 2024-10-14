@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
@@ -16,12 +18,36 @@ namespace backend.Controllers
             _context = context;
         }
 
+        // GET: api/ticket?page=1&pageSize=10
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
+        public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, int pageSize = 8)
         {
-            return await _context.Tickets.ToListAsync();
+            // Validate page and pageSize parameters
+            if (page < 1 || pageSize < 1)
+            {
+                return BadRequest("Page and pageSize must be greater than 0.");
+            }
+
+            var totalCount = await _context.Tickets.CountAsync(); // Get total count of tickets
+
+            // Get tickets with pagination
+            var tickets = await _context.Tickets
+                .OrderBy(ticket => ticket.TicketId) // Ensure a consistent order
+                .Skip((page - 1) * pageSize) // Skip records for previous pages
+                .Take(pageSize) // Take records for the current page
+                .ToListAsync();
+
+            return Ok(new
+            {
+                TotalCount = totalCount,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+                Tickets = tickets
+            });
         }
 
+        // GET: api/ticket/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Ticket>> GetTicket(int id)
         {
@@ -33,6 +59,7 @@ namespace backend.Controllers
             return ticket;
         }
 
+        // POST: api/ticket
         [HttpPost]
         public async Task<ActionResult<Ticket>> PostTicket([FromBody] Ticket ticket)
         {
@@ -42,7 +69,7 @@ namespace backend.Controllers
             return CreatedAtAction("GetTicket", new { id = ticket.TicketId }, ticket);
         }
 
-
+        // PUT: api/ticket/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTicket(int id, Ticket ticket)
         {
@@ -72,6 +99,7 @@ namespace backend.Controllers
             return NoContent();
         }
 
+        // DELETE: api/ticket/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
