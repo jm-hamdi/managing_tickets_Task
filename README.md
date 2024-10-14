@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Task Management Application
 
 ## Description
@@ -183,3 +184,6 @@ You have successfully set up SQL Server on macOS using Docker and connected to i
 - [React](https://reactjs.org/)
 - [.NET](https://dotnet.microsoft.com/)
 - [Entity Framework](https://docs.microsoft.com/en-us/ef/)
+=======
+# Task Project
+>>>>>>> 4b102350 (test task controller)
