@@ -8,16 +8,19 @@ const TableComponent: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editTask, setEditTask] = useState<Task | null>(null);
-    const [currentPage, setCurrentPage] = useState(1); // Current page state
-    const [totalPages, setTotalPages] = useState(1); // Total pages state
-    const pageSize = 10; // Number of tasks per page
+    const [sortColumn, setSortColumn] = useState<keyof Task>('ticketId'); // Specify keys of Task type
+    const [sortOrder, setSortOrder] = useState<string>('asc');
+    const [filter, setFilter] = useState<string>('');
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [pageSize] = useState<number>(7);
+    const [totalCount, setTotalCount] = useState<number>(0);
 
-    const fetchTasks = async (page: number) => {
+    const fetchTasks = async () => {
         try {
-            const response = await fetch(`http://localhost:5038/api/ticket?page=${page}&pageSize=${pageSize}`);
+            const response = await fetch(`http://localhost:5038/api/ticket?page=${currentPage}&pageSize=${pageSize}`);
             const data = await response.json();
             setTasks(data.tickets); // Set tasks to the tickets array from the response
-            setTotalPages(data.totalPages); // Update total pages
+            setTotalCount(data.totalCount); // Set total count for pagination
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
@@ -37,7 +40,7 @@ const TableComponent: React.FC = () => {
                 throw new Error('Failed to add task');
             }
 
-            await fetchTasks(currentPage); // Refresh tasks for the current page
+            await fetchTasks();
         } catch (error) {
             console.error('Error adding task:', error);
             alert('Failed to add task: ' + (error instanceof Error ? error.message : String(error)));
@@ -59,7 +62,7 @@ const TableComponent: React.FC = () => {
                     throw new Error('Failed to update task');
                 }
 
-                await fetchTasks(currentPage); // Refresh the task list
+                await fetchTasks(); // Refresh the task list
                 setEditTask(null);
             } catch (error) {
                 console.error('Error updating task:', error);
@@ -79,7 +82,7 @@ const TableComponent: React.FC = () => {
                     throw new Error('Failed to delete task');
                 }
 
-                await fetchTasks(currentPage); // Refresh tasks for the current page
+                await fetchTasks();
             } catch (error) {
                 console.error('Error deleting task:', error);
                 alert('Failed to delete task: ' + (error instanceof Error ? error.message : String(error)));
@@ -88,7 +91,7 @@ const TableComponent: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchTasks(currentPage); // Fetch tasks when the component mounts or currentPage changes
+        fetchTasks(); // Fetch tasks when the component mounts or page changes
     }, [currentPage]);
 
     // Function to format the date as 'MMM-DD-YYYY'
@@ -101,8 +104,75 @@ const TableComponent: React.FC = () => {
         return `${month}-${day}-${year}`; // Construct the final format
     };
 
+    const sortTasks = (tasks: Task[]) => {
+        return tasks.sort((a, b) => {
+            if (a[sortColumn] < b[sortColumn]) {
+                return sortOrder === 'asc' ? -1 : 1;
+            }
+            if (a[sortColumn] > b[sortColumn]) {
+                return sortOrder === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+    };
+
+    const filteredAndSortedTasks = sortTasks(tasks.filter(task =>
+        task.description.toLowerCase().includes(filter.toLowerCase()) ||
+        task.status.toLowerCase().includes(filter.toLowerCase())
+    ));
+
+    const totalPages = Math.ceil(totalCount / pageSize); // Calculate total pages for pagination
+
     return (
         <div>
+            <div className="mb-3">
+                <input 
+                    type="text" 
+                    placeholder="Filter by description or status" 
+                    value={filter} 
+                    onChange={(e) => setFilter(e.target.value)} 
+                    className="form-control"
+                />
+            </div>
+            <div className="mb-3">
+                <button 
+                    className="btn btn-outline-secondary me-2" 
+                    onClick={() => { 
+                        setSortColumn('ticketId'); 
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); 
+                    }}
+                >
+                    Sort by Ticket ID
+                </button>
+                <button 
+                    className="btn btn-outline-secondary me-2" 
+                    onClick={() => { 
+                        setSortColumn('description'); 
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); 
+                    }}
+                >
+                    Sort by Description
+                </button>
+                <button 
+                    className="btn btn-outline-secondary me-2" 
+                    onClick={() => { 
+                        setSortColumn('status'); 
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); 
+                    }}
+                >
+                    Sort by Status
+                </button>
+                <button 
+                    className="btn btn-outline-secondary" 
+                    onClick={() => { 
+                        setSortColumn('date'); 
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); 
+                    }}
+                >
+                    Sort by Date
+                </button>
+            </div>
+
             <table>
                 <thead>
                     <tr>
@@ -114,12 +184,12 @@ const TableComponent: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {tasks.map((task) => (
+                    {filteredAndSortedTasks.map((task) => (
                         <tr key={task.ticketId}>
                             <td>{task.ticketId}</td>
                             <td>{task.description}</td>
                             <td>{task.status}</td>
-                            <td>{formatDate(task.date)}</td> {/* Use the formatDate function */}
+                            <td>{formatDate(task.date)}</td>
                             <td>
                                 <a
                                     href="#"
@@ -150,32 +220,29 @@ const TableComponent: React.FC = () => {
             </table>
 
             {/* Pagination Controls */}
-            <div className="justify-content-between align-items-center my-3">
-                <button
-                    className="btn btn-outline-primary"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(currentPage - 1)}
+            <div className="mt-3">
+                <button 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(currentPage - 1)} 
+                    className="btn btn-outline-secondary me-2"
                 >
                     {'<'}
                 </button>
-                <span>
-                    Page {currentPage} of {totalPages}
-                </span>
-                <button
-                    className="btn btn-outline-primary"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(currentPage + 1)}
+                <span>{currentPage} of {totalPages}</span>
+                <button 
+                    disabled={currentPage === totalPages} 
+                    onClick={() => setCurrentPage(currentPage + 1)} 
+                    className="btn btn-outline-secondary ms-2"
                 >
                     {'>'}
                 </button>
             </div>
 
-
             {isModalVisible && (
                 <AddTaskModal
                     onClose={() => setIsModalVisible(false)}
-                    onAdd={editTask ? handleUpdateTask : handleAddTask} // Use update function if editing
-                    task={editTask} // Pass the task to edit
+                    onAdd={editTask ? handleUpdateTask : handleAddTask}
+                    task={editTask}
                 />
             )}
         </div>
