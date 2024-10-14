@@ -141,3 +141,4 @@
 /Users/JM/Desktop/Task_Fullstack_Developer_dotNET/backend/obj/Debug/net8.0/backend.pdb
 /Users/JM/Desktop/Task_Fullstack_Developer_dotNET/backend/obj/Debug/net8.0/backend.genruntimeconfig.cache
 /Users/JM/Desktop/Task_Fullstack_Developer_dotNET/backend/obj/Debug/net8.0/ref/backend.dll
+/Users/JM/Desktop/Task_Fullstack_Developer_dotNET/backend/obj/Debug/net8.0/backend.sourcelink.json

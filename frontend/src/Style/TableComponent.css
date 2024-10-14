@@ -22,7 +22,7 @@ th, td {
 
 th {
     background-color: #2fb727; 
-    color: #333; 
+    color: #ffffff; 
 }
 
 tr:hover {
@@ -48,3 +48,26 @@ button {
 button:hover {
     background-color: #249f1a;
 }
+
+/* Center the modal on the screen */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center the modal vertically */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 400px; /* Set a fixed width for the modal */
+}
+

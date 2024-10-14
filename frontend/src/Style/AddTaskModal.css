@@ -60,3 +60,9 @@
 .modal-content button[type="button"]:hover {
     background-color: #c82333; 
 }
+
+.form-text {
+    margin-top: 0.25rem; /* Adjust spacing */
+    font-size: 0.875rem; /* Smaller text */
+    color: #6c757d; /* Bootstrap muted text color */
+}
