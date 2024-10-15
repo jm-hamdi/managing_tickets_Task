@@ -17,7 +17,7 @@ const TableComponent: React.FC = () => {
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch(`http://localhost:5038/api/ticket?page=${currentPage}&pageSize=${pageSize}`);
+            const response = await fetch(`http://localhost:5038/api/ticket?page=${currentPage}&pageSize=${pageSize}&sortColumn=${sortColumn}&sortOrder=${sortOrder}&filter=${filter}`);
             const data = await response.json();
             setTasks(data.tickets); // Set tasks to the tickets array from the response
             setTotalCount(data.totalCount); // Set total count for pagination
@@ -25,6 +25,10 @@ const TableComponent: React.FC = () => {
             console.error('Error fetching tasks:', error);
         }
     };
+
+    useEffect(() => {
+        fetchTasks(); // Fetch tasks when the component mounts or page changes
+    }, [currentPage, sortColumn, sortOrder, filter]);
 
     const handleAddTask = async (newTask: Omit<Task, 'ticketId'>) => {
         try {
@@ -90,10 +94,6 @@ const TableComponent: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        fetchTasks(); // Fetch tasks when the component mounts or page changes
-    }, [currentPage]);
-
     // Function to format the date as 'MMM-DD-YYYY'
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -104,36 +104,9 @@ const TableComponent: React.FC = () => {
         return `${month}-${day}-${year}`; // Construct the final format
     };
 
-    const sortTasks = (tasks: Task[]) => {
-        return tasks.sort((a, b) => {
-            if (a[sortColumn] < b[sortColumn]) {
-                return sortOrder === 'asc' ? -1 : 1;
-            }
-            if (a[sortColumn] > b[sortColumn]) {
-                return sortOrder === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
-    };
-
-    const filteredAndSortedTasks = sortTasks(tasks.filter(task =>
-        task.description.toLowerCase().includes(filter.toLowerCase()) ||
-        task.status.toLowerCase().includes(filter.toLowerCase())
-    ));
-
-    const totalPages = Math.ceil(totalCount / pageSize); // Calculate total pages for pagination
-
     return (
         <div>
-            <div className="mb-3">
-                <input 
-                    type="text" 
-                    placeholder="Filter by description or status" 
-                    value={filter} 
-                    onChange={(e) => setFilter(e.target.value)} 
-                    className="form-control"
-                />
-            </div>
+            
             <div className="mb-3">
                 <button 
                     className="btn btn-outline-secondary me-2" 
@@ -172,6 +145,19 @@ const TableComponent: React.FC = () => {
                     Sort by Date
                 </button>
             </div>
+            <div className="row justify-content-center">
+                <div className="col-md-6 col-lg-4">
+                    <div className="border rounded p-2">
+                        <input 
+                            type="text" 
+                            placeholder="Filter by description or status" 
+                            value={filter} 
+                            onChange={(e) => setFilter(e.target.value)} 
+                            className="form-control" 
+                        />
+                    </div>
+                </div>
+            </div>
 
             <table>
                 <thead>
@@ -184,7 +170,7 @@ const TableComponent: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredAndSortedTasks.map((task) => (
+                    {tasks.map((task) => (
                         <tr key={task.ticketId}>
                             <td>{task.ticketId}</td>
                             <td>{task.description}</td>
@@ -228,9 +214,9 @@ const TableComponent: React.FC = () => {
                 >
                     {'<'}
                 </button>
-                <span>{currentPage} of {totalPages}</span>
+                <span>{currentPage} of {Math.ceil(totalCount / pageSize)}</span>
                 <button 
-                    disabled={currentPage === totalPages} 
+                    disabled={currentPage === Math.ceil(totalCount / pageSize)} 
                     onClick={() => setCurrentPage(currentPage + 1)} 
                     className="btn btn-outline-secondary ms-2"
                 >
