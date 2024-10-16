@@ -19,15 +19,15 @@ const TableComponent: React.FC = () => {
         try {
             const response = await fetch(`http://localhost:5038/api/ticket?page=${currentPage}&pageSize=${pageSize}&sortColumn=${sortColumn}&sortOrder=${sortOrder}&filter=${filter}`);
             const data = await response.json();
-            setTasks(data.tickets); // Set tasks to the tickets array from the response
-            setTotalCount(data.totalCount); // Set total count for pagination
+            setTasks(data.tickets); 
+            setTotalCount(data.totalCount); 
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
     };
 
     useEffect(() => {
-        fetchTasks(); // Fetch tasks when the component mounts or page changes
+        fetchTasks(); 
     }, [currentPage, sortColumn, sortOrder, filter]);
 
     const handleAddTask = async (newTask: Omit<Task, 'ticketId'>) => {
@@ -66,7 +66,7 @@ const TableComponent: React.FC = () => {
                     throw new Error('Failed to update task');
                 }
 
-                await fetchTasks(); // Refresh the task list
+                await fetchTasks(); 
                 setEditTask(null);
             } catch (error) {
                 console.error('Error updating task:', error);
@@ -94,14 +94,13 @@ const TableComponent: React.FC = () => {
         }
     };
 
-    // Function to format the date as 'MMM-DD-YYYY'
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
         const month = date.toLocaleString('en-US', { month: 'short' });
-        const day = date.getDate().toString().padStart(2, '0'); // Ensure day is two digits
+        const day = date.getDate().toString().padStart(2, '0'); 
         const year = date.getFullYear();
 
-        return `${month}-${day}-${year}`; // Construct the final format
+        return `${month}-${day}-${year}`; 
     };
 
     return (
@@ -205,7 +204,6 @@ const TableComponent: React.FC = () => {
                 </tbody>
             </table>
 
-            {/* Pagination Controls */}
             <div className="mt-3">
                 <button 
                     disabled={currentPage === 1} 

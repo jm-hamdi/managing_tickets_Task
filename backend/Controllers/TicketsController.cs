@@ -18,8 +18,7 @@ namespace backend.Controllers
             _context = context;
         }
 
-        // GET: api/ticket?page=1&pageSize=10
-        // GET: api/ticket?page=1&pageSize=10&sortColumn=description&sortOrder=asc&filter=yourFilter
+
 [HttpGet]
 public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, int pageSize = 8, string sortColumn = "ticketId", string sortOrder = "asc", string filter = "")
 {
@@ -47,14 +46,14 @@ public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, in
             query = sortOrder == "asc" ? query.OrderBy(t => t.Date) : query.OrderByDescending(t => t.Date);
             break;
         default:
-            break; // Default sorting (can be TicketId)
+            break; 
     }
 
-    var totalCount = await query.CountAsync(); // Get total count of tickets
+    var totalCount = await query.CountAsync(); 
 
     var tickets = await query
-        .Skip((page - 1) * pageSize) // Skip records for previous pages
-        .Take(pageSize) // Take records for the current page
+        .Skip((page - 1) * pageSize) 
+        .Take(pageSize) 
         .ToListAsync();
 
     return Ok(new
@@ -68,7 +67,7 @@ public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, in
 }
 
 
-        // GET: api/ticket/{id}
+       
         [HttpGet("{id}")]
         public async Task<ActionResult<Ticket>> GetTicket(int id)
         {
@@ -80,7 +79,7 @@ public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, in
             return ticket;
         }
 
-        // POST: api/ticket
+        
         [HttpPost]
         public async Task<ActionResult<Ticket>> PostTicket([FromBody] Ticket ticket)
         {
@@ -90,7 +89,7 @@ public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, in
             return CreatedAtAction("GetTicket", new { id = ticket.TicketId }, ticket);
         }
 
-        // PUT: api/ticket/{id}
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTicket(int id, Ticket ticket)
         {
@@ -120,7 +119,7 @@ public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, in
             return NoContent();
         }
 
-        // DELETE: api/ticket/{id}
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
