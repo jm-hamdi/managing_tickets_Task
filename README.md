@@ -133,8 +133,6 @@ You have successfully set up SQL Server on macOS using Docker and connected to i
    ```bash
    docker run -e "ACCEPT_EULA=1" -e "MSSQL_SA_PASSWORD=CodeWith123" -e "MSSQL_PID=Developer"  -e "MSSQL_USER=SA" -p 1433:1433 -d --name=sql_new mcr.microsoft.com/azure-sql-edge
    ```
-This command is used to run a Docker container for Azure SQL Edge, which is a version of SQL Server designed for edge devices. Here's a breakdown of the command and its components:
-
 
 3. **Database Migrations**:
    - Navigate to the `backend` directory.
