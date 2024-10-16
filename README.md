@@ -180,11 +180,11 @@ You have successfully set up SQL Server on macOS using Docker and connected to i
 
 ## Swagger Documentation for API
 
-<img src="https://github.com/jm-hamdi/managing_tickets_Task/blob/main/swagger.png" alt="swagger" width="300" height="600">
+<img src="https://github.com/jm-hamdi/managing_tickets_Task/blob/main/swagger.png" alt="swagger" >
 
 ## Application Screen
 
-<img src="https://github.com/jm-hamdi/managing_tickets_Task/blob/main/swagger.png" alt="swagger" width="300" height="600">
+<img src="https://github.com/jm-hamdi/managing_tickets_Task/blob/main/swagger.png" alt="swagger" >
 
 
 ## Acknowledgments
