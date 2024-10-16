@@ -1,7 +1,10 @@
 ﻿<Properties StartupConfiguration="{07D7AAFC-0981-4EB3-8EC3-FDC9289B0E62}|https">
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints />
+  <MonoDevelop.Ide.ItemProperties.backend PreferredExecutionTarget="/Applications/Google Chrome.app" />
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.Backend.Tests FirstBuild="True" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Models/Ticket.cs">
     <Files>
       <File FileName="Controllers/TicketsController.cs" Line="122" Column="9" />
@@ -18,8 +21,4 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.ItemProperties.backend PreferredExecutionTarget="/Applications/Google Chrome.app" />
 </Properties>
