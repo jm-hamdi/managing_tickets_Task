@@ -184,7 +184,7 @@ You have successfully set up SQL Server on macOS using Docker and connected to i
 
 ## Application Screen
 
-<img src="https://github.com/jm-hamdi/managing_tickets_Task/blob/main/swagger.png" alt="swagger" >
+<img src="https://github.com/jm-hamdi/managing_tickets_Task/blob/main/Table_Screen.png" alt="swagger" >
 
 
 ## Acknowledgments
