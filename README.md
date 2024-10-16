@@ -125,7 +125,7 @@ You have successfully set up SQL Server on macOS using Docker and connected to i
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/jm-hamdi/managing_tickets_Task.git
-   cd Task_Fullstack_Developer_dotNET/backend
+   cd managing_tickets_Task/backend
    ```
 
 2. **Run SQL Server with Docker**:
