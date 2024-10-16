@@ -28,7 +28,7 @@ public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets(int page = 1, in
     // Apply filtering
     if (!string.IsNullOrWhiteSpace(filter))
     {
-        query = query.Where(t => t.Description.Contains(filter) || t.Status.Contains(filter));
+        query = query.Where(t => (t.Description != null && t.Description.Contains(filter)) || (t.Status != null && t.Status.Contains(filter)));
     }
 
     // Apply sorting
